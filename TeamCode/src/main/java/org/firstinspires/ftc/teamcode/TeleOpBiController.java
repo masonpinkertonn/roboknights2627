@@ -29,7 +29,6 @@ public class TeleOpBiController extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         //motors
 
         rf = hardwareMap.get(DcMotor.class, "rf");
@@ -140,8 +139,35 @@ public class TeleOpBiController extends LinearOpMode {
 
             } else if (gamepad2.a) {
 
-                launch0.setPower(1);
-                launch1.setPower(1);
+                launch0.setPower(1.0);
+                launch1.setPower(1.0);
+
+            } else if (gamepad2.dpad_up) {
+
+                launch0.setPower(0.25);
+                launch1.setPower(0.25);
+
+            } else if (gamepad2.dpad_right) {
+
+                launch0.setPower(0.5);
+                launch1.setPower(0.5);
+
+            } else if (gamepad2.dpad_down) {
+
+                launch0.setPower(0.66);
+                launch1.setPower(0.66);
+
+            } else if (gamepad2.dpad_left) {
+
+                launch0.setPower(0.83);
+                launch1.setPower(0.83);
+
+            } else {
+
+                launch0.setPower(0);
+                launch1.setPower(0);
+
+            }
 
                 //final updates
                 follower.update();
@@ -152,4 +178,3 @@ public class TeleOpBiController extends LinearOpMode {
         }
 
     }
-}
