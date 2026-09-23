@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp(name = "TeleOpBCFieldCentric")
@@ -29,10 +30,12 @@ public class TeleOpBCFieldCentric extends OpMode {
 
     //servos:)
     private CRServo turretPitch, launch;
+    private Servo rgb;
 
     //turret variables
     double turretPos = 0;
     boolean turretOn = false;
+    boolean turretAuto = false;
 
 
     @Override
@@ -49,6 +52,9 @@ public class TeleOpBCFieldCentric extends OpMode {
         //init servo:)
         turretPitch = hardwareMap.get(CRServo.class,"turretPitch");
         launch = hardwareMap.get(CRServo.class,"launch");
+
+        //init rgb:)
+        rgb = hardwareMap.get(Servo.class, "rgb_indicator");
 
     }
 
@@ -79,12 +85,14 @@ public class TeleOpBCFieldCentric extends OpMode {
         }
 
         //launcher:)
-        if(gamepad2.y && !turretOn){
+        if(gamepad2.left_trigger_pressed && !turretOn){
             launch0.setPower(1.0);
             launch1.setPower(1.0);
-        } else if(gamepad2.y && turretOn){
+            turretOn = true;
+        } else if(gamepad2.left_trigger_pressed && turretOn){
             launch0.setPower(0);
             launch1.setPower(0);
+            turretOn = false;
         }
         if(gamepad2.right_trigger_pressed){
             launch.setPower(0);
@@ -92,23 +100,23 @@ public class TeleOpBCFieldCentric extends OpMode {
         }
 
         //turret pitch:)
-        if(gamepad2.dpad_up || gamepad1.dpad_up){
+        if(!turretAuto && (gamepad2.dpad_up || gamepad1.dpad_up)){
             turretPitch.setPower(1.0);
-        }else if(gamepad2.dpad_down || gamepad1.dpad_down){
+        }else if(!turretAuto && (gamepad2.dpad_down || gamepad1.dpad_down)){
             turretPitch.setPower(-1.0);
         }else{
             turretPitch.setPower(0);
         }
 
         //turret position w/ limiter:)
-        if (gamepad1.dpad_left || gamepad2.dpad_left) {
+        if (!turretAuto && (gamepad1.dpad_left || gamepad2.dpad_left)) {
             //CW limiting:)
             if (turretPos > -360) {
                 turretRot.setPower(-1.0);
             } else {
                 turretRot.setPower(0);
             }
-        } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+        } else if (!turretAuto && (gamepad1.dpad_right || gamepad2.dpad_right)) {
             // CCW limiting:)
             if (turretPos < 360) {
                 turretRot.setPower(1.0);
@@ -118,6 +126,21 @@ public class TeleOpBCFieldCentric extends OpMode {
         }else {
             turretRot.setPower(0);
         }
+
+        //rgb logic
+        if(launch0.getPower() >= 0.9 && launch1.getPower() >= 0.9){
+            rgb.setPosition(0.2);
+        } else{
+            if(turretAuto){
+                rgb.setPosition(0.5);
+            }else {
+                rgb.setPosition(0.7);
+            }
+        }
+
+        //telemetry updates
+        telemetry.addData("Launch power", (launch0.getPower()+launch1.getPower())/2);
+        telemetry.addData("Turret Position (rotation)", turretPos);
 
         //final updates:)
         follower.update();

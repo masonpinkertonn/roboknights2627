@@ -24,7 +24,7 @@ public class Constants {
             .strafePodX(-2.5)
             .leftEncoder_HardwareMapName("lf")
             .rightEncoder_HardwareMapName("rr")
-            .strafeEncoder_HardwareMapName("rf")
+            .strafeEncoder_HardwareMapName("rr")
             .leftEncoderDirection(Encoder.FORWARD)
             .rightEncoderDirection(Encoder.FORWARD)
             .strafeEncoderDirection(Encoder.FORWARD);

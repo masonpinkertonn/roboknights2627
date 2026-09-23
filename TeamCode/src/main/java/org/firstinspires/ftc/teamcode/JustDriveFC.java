@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -26,10 +27,10 @@ public class JustDriveFC extends OpMode {
     public void loop() {
         // drive controls:)
         follower.setTeleOpDrive(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
+               - gamepad1.left_stick_y,
+               - gamepad1.left_stick_x,
                 -gamepad1.right_stick_x,
-                false
+                true
         );
 
         //final updates for follower:)
